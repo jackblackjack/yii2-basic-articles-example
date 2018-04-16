@@ -140,4 +140,13 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        // Set the default role for user.
+        $authManager = \Yii::$app->authManager;
+        
+        $user = $authManager->getRole('user');
+        $authManager->assign($user, $insert->id);
+    }
 }

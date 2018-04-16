@@ -5,6 +5,11 @@ modules:
             url: http://127.0.0.1:8080/
             browser: firefox
         - Yii2:
-            part: orm
             entryScript: index-test.php
-            cleanup: false
+            configFile: 'tests/_config/acceptance.php'
+            part:
+              - email
+              - orm
+              - fixtures
+            cleanup: false # remove fixture in _after and load fixture in _before. In this case data from fixtures insert to db AFTER DbYii2Config populate
+            transaction: false # don't wrap test in transaction. Acceptance tests use another db connection; i.e. transaction has no effect.

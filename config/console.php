@@ -25,6 +25,18 @@ $config = [
             ],
         ],
         'db' => $db,
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+            'defaultRoles' => ['guest', 'user', 'editor', 'admin'],
+        ],
+        'i18n' => [
+            'translations' => [
+                'yii2mod.rbac' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@yii2mod/rbac/messages',
+                ]
+            ],
+        ],
     ],
     'params' => $params,
     /*
@@ -34,6 +46,11 @@ $config = [
         ],
     ],
     */
+    'modules' => [
+        'rbac' => [
+            'class' => 'yii2mod\rbac\ConsoleModule',
+        ],
+    ],
 ];
 
 if (YII_ENV_DEV) {

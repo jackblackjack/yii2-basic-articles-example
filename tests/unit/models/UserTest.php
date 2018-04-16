@@ -9,14 +9,14 @@ use app\tests\fixtures\UserFixture;
 class UserTest extends \Codeception\Test\Unit
 {
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function _fixtures()
     {
         return [
             'user' => [
                 'class' => UserFixture::className(),
-                'dataFile' => codecept_data_dir() . 'login_data.php'
+                'dataFile' => codecept_data_dir() . 'user_data.php'
             ]
         ];
     }
