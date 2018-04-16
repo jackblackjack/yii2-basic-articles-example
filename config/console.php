@@ -44,4 +44,9 @@ if (YII_ENV_DEV) {
     ];
 }
 
+if (YII_ENV_TEST) {
+    $db = require __DIR__ . '/test_db.php';
+    $config['components']['db'] = $db;
+}
+
 return $config;
