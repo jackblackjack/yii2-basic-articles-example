@@ -1,32 +1,25 @@
 {
-    "name": "yiisoft/yii2-app-basic",
-    "description": "Yii 2 Basic Project Template",
-    "keywords": ["yii2", "framework", "basic", "project template"],
-    "homepage": "http://www.yiiframework.com/",
+    "name": "jackblackjack/yii2-basic-articles-example",
+    "description": "Простейший новостной сайт с авторизацией и оповещением пользователей о событиях (Yii 2 Basic Project Template)",
+    "keywords": ["yii2", "framework", "basic", "articles"],
     "type": "project",
     "license": "BSD-3-Clause",
-    "support": {
-        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
-        "source": "https://github.com/yiisoft/yii2"
-    },
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.4.0",
         "yiisoft/yii2": "~2.0.14",
         "yiisoft/yii2-bootstrap": "~2.0.0",
-        "yiisoft/yii2-swiftmailer": "~2.0.0"
+        "yiisoft/yii2-swiftmailer": "~2.0.0",
+        "yii2mod/yii2-rbac": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
         "yiisoft/yii2-gii": "~2.0.0",
         "yiisoft/yii2-faker": "~2.0.0",
 
-        "codeception/base": "^2.2.3",
-        "codeception/verify": "~0.3.1",
-        "codeception/specify": "~0.4.3"
+        "codeception/codeception": "^2.4",
+        "codeception/verify": "^1.0",
+        "codeception/specify": "^1.0"
     },
     "config": {
         "process-timeout": 1800,
@@ -49,7 +42,8 @@
                 {
                     "runtime": "0777",
                     "web/assets": "0777",
-                    "yii": "0755"
+                    "yii": "0755",
+                    "migrations": "0755"
                 }
             ]
         },
