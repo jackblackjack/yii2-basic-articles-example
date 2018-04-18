@@ -41,11 +41,40 @@ return [
             'class' => 'yii\rbac\DbManager',
             'defaultRoles' => ['guest', 'user', 'editor', 'admin'],
         ],
+        'i18n' => [
+            'translations' => [
+                'yii2mod.rbac' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@yii2mod/rbac/messages',
+                ]
+            ],
+        ]
     ],
     'params' => $params,
     'modules' => [
+        'redactor' => 'yii\redactor\RedactorModule',
         'rbac' => [
             'class' => 'yii2mod\rbac\Module',
+            /*
+            'as access' => [
+                'class' => yii2mod\rbac\filters\AccessControl::className()
+            ]
+            */
         ],
+        'gii' => [
+            'class' => 'yii\gii\Module',
+            'allowedIPs' => ['127.0.0.1', '::1', '192.168.83.1']
+        ]
     ],
 ];
+
+if (YII_DEBUG) {
+    // configuration adjustments for 'dev' environment
+    $config['bootstrap'][] = 'debug';
+    $config['modules']['debug'] = [
+        'class' => 'yii\debug\Module',
+        // uncomment the following to add your IP if you are not connecting from localhost.
+        'allowedIPs' => ['127.0.0.1', '::1', '192.168.83.1']       
+    ];
+}
+
