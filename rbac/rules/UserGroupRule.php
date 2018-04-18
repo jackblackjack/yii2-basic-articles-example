@@ -10,21 +10,13 @@ class UserGroupRule extends Rule
  
     public function execute($user, $item, $params)
     {
-        if (!\Yii::$app->user->isGuest)
-        {
-            $group = \Yii::$app->user->identity->group;
+        if (\Yii::$app->user->isGuest) return false;
 
-            if ($item->name === 'admin') {
-                return $group == 'admin';
-            } 
-            elseif ($item->name === 'user') {
-                return $group == 'admin' || $group == 'user';
-            } 
-            elseif ($item->name === 'editor') {
-                return $group == 'admin' || $group == 'editor';
-            }
-        }
-        
-        return true;
+        $ar_roles = \Yii::$app->authManager->getRolesByUser($user);
+        $ar_roles_filter = array_filter(array_keys($ar_roles), function($value) use ($item) { 
+            return $value === $item->name;
+        });
+
+        return in_array($item->name, $ar_roles_filter);
     }
 }

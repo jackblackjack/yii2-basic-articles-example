@@ -8,8 +8,10 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
-class User extends ActiveRecord implements \yii\web\IdentityInterface
+class User extends ActiveRecord implements IdentityInterface
 {
+    const STATUS_ACTIVE = 1;
+
     /**
      * @inheritdoc
      */
@@ -34,8 +36,9 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['is_active'], 'default', 'value' => 0],
-            [['is_active'], 'in', 'range' => [0, 1]],
+            [ [ 'is_active' ], 'default', 'value' => 0],
+            [ [ 'is_active' ], 'in', 'range' => [0, 1]],
+            [ [ 'username' ], 'required' ]
         ];
     }
 
@@ -148,5 +151,55 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         
         $user = $authManager->getRole('user');
         $authManager->assign($user, $insert->id);
+    }
+
+    public static function findByPasswordResetToken($token)
+    {
+        if (!static::isPasswordResetTokenValid($token)) {
+            return null;
+        }
+     
+        return static::findOne([
+            'password_reset_token' => $token,
+            'is_active' => self::STATUS_ACTIVE,
+        ]);
+    }
+     
+    public static function isPasswordResetTokenValid($token)
+    {
+     
+        if (empty($token)) {
+            return false;
+        }
+     
+        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
+        return $timestamp + $expire >= time();
+    }
+     
+    public function generatePasswordResetToken()
+    {
+        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
+    }
+     
+    public function removePasswordResetToken()
+    {
+        $this->password_reset_token = null;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(User::className(), ['id' => 'created_by']);
+    }
+
+    public function getGroup()
+    {
+        /*
+        return $this->hasMany(Tag::className(), ['id' => 'tag_id'])
+            ->viaTable('post_tag', ['post_id' => 'id']);
+        */
     }
 }
