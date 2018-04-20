@@ -35,25 +35,44 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
+    
+    $ar_items = [];
+ 
+
+    if (!\Yii::$app->user->isGuest && \Yii::$app->user->can('articleCreateNew')) {
+        $ar_items[] =  ['label' => 'Add article', 'url' => ['/article/create']];
+    }
+
+    if (!\Yii::$app->user->isGuest && \Yii::$app->user->can('userCreateNew')) {
+        $ar_items[] =  ['label' => 'Add user', 'url' => ['/user/create']];
+    }
+    
+    $ar_items = array_merge($ar_items, [
+        ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => 'About', 'url' => ['/site/about']],
+        ['label' => 'Contact', 'url' => ['/site/contact']]
+    ]);
+
+    if (\Yii::$app->user->isGuest) {
+        $ar_items = array_merge($ar_items, [
+            ['label' => 'Login', 'url' => ['/site/login']],
+            ['label' => 'Sign up', 'url' => ['/site/sign-up']]
+        ]);
+    }
+    else {
+        $ar_items[] = '<li>'
+        . Html::beginForm(['/site/logout'], 'post')
+        . Html::submitButton(
+            'Logout (' . Yii::$app->user->identity->username . ')',
+            ['class' => 'btn btn-link logout']
+        )
+        . Html::endForm()
+        . '</li>';
+    }
+
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
+        'items' => $ar_items
     ]);
     NavBar::end();
     ?>
@@ -76,6 +95,21 @@ AppAsset::register($this);
 </footer>
 
 <?php $this->endBody() ?>
+
+<?php //print_r(\Yii::$app->authManager->getPermissionsByUser(\Yii::$app->user->findByUsername('admin'))); ?>
+
+<?php //echo 'User id:', \Yii::$app->user->getId(); ?>
+
+
+
+<?php //print_r(@$ar['articleCreateNew']); ?>
+
+
+<?php //print_r(\Yii::$app->authManager->getAssignments(\Yii::$app->user->getId())); ?>
+
+<?php //var_dump(\Yii::$app->user->can('articleCreateNew', [], false)); ?>
+<?php //var_dump(\Yii::$app->user->can('articleCreateNew')); ?>
+
 </body>
 </html>
 <?php $this->endPage() ?>

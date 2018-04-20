@@ -32,6 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'title',
             'preview_data',
             'full_data',
+            'is_active',
             'created_at',
             'updated_at',
         ],
