@@ -58,7 +58,8 @@ class SignUpActivateForm extends Model
     {
         /* @var $user User */
         $user = User::findOne([
-            'email' => $this->email
+            'email' => $this->email,
+            'is_active' => app\models\User::STATUS_ACTIVE
         ]);
  
         if (!$user) {

@@ -75,7 +75,7 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $searchModel = new ArticleSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -92,14 +92,14 @@ class SiteController extends Controller
     {
         $model = new SignUpForm();
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load(\Yii::$app->request->post())) {
             
             if ($user = $model->signup()) {
                 if ($model->sendEmail()) {
-                    Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
+                    \Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
                     return $this->goHome();
                 } else {
-                    Yii::$app->session->setFlash('error', 'Sorry, we are unable to sign up for email provided.');
+                    \Yii::$app->session->setFlash('error', 'Sorry, we are unable to sign up for email provided.');
                 }
             }
         }
@@ -122,10 +122,12 @@ class SiteController extends Controller
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->activate()) {
-            Yii::$app->session->setFlash('success', 'Welcome!');
-        } else {
-            Yii::$app->session->setFlash('error', 'Sorry, we are unable to sign up for email provided.');
+        if ($model->validate() && $model->activate()) {
+            if ($model->sendEmail()) {
+                Yii::$app->session->setFlash('success', 'Welcome!');
+            } else {
+                Yii::$app->session->setFlash('error', 'Sorry, we are unable to sign up for email provided.');
+            }
         }
 
         return $this->goHome();
@@ -138,12 +140,12 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
+        if (!\Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if ($model->load(\Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }
 
@@ -160,21 +162,21 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
+        \Yii::$app->user->logout();
 
         return $this->goHome();
     }
 
     /**
-     * Displays contact page.
+     * Displa\Ys contact page.
      *
      * @return Response|string
      */
     public function actionContact()
     {
         $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
+        if ($model->load(\Yii::$app->request->post()) && $model->contact(\Yii::$app->params['adminEmail'])) {
+            \Yii::$app->session->setFlash('contactFormSubmitted');
 
             return $this->refresh();
         }
@@ -184,7 +186,7 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays about page.
+     * Displa\Ys about page.
      *
      * @return string
      */
@@ -202,12 +204,12 @@ class SiteController extends Controller
     {
         $model = new PasswordResetRequestForm();
  
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+        if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
+                \Yii::$app->session->setFlash('success', 'Check \Your email for further instructions.');
                 return $this->goHome();
             } else {
-                Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for email provided.');
+                \Yii::$app->session->setFlash('error', 'Sorr\Y, we are unable to reset password for email provided.');
             }
         }
  
@@ -231,8 +233,8 @@ class SiteController extends Controller
             throw new BadRequestHttpException($e->getMessage());
         }
  
-        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
-            Yii::$app->session->setFlash('success', 'New password was saved.');
+        if ($model->load(\Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
+            \Yii::$app->session->setFlash('success', 'New password was saved.');
             return $this->goHome();
         }
  

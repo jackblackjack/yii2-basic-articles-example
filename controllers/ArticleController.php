@@ -34,7 +34,7 @@ class ArticleController extends Controller
                         'allow' => true,
                         'roles' => ['editor', 'admin'],
                     ],
-                ],
+                ]
             ],
         ];
     }
