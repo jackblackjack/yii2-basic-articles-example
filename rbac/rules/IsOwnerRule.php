@@ -16,6 +16,7 @@ class IsOwnerRule extends Rule
      */
     public function execute($user, $item, $params)
     {
+        die('a');
         return isset($params['news']) ? $params['news']->createdBy == $user : false;
     }
 }

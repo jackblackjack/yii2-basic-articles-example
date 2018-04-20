@@ -8,6 +8,7 @@ use app\models\ArticleSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii2mod\rbac\filters\AccessControl;
 
 /**
  * ArticleController implements the CRUD actions for Article model.
@@ -25,7 +26,16 @@ class ArticleController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                 ],
-            ]
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['editor', 'admin'],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -93,6 +103,46 @@ class ArticleController extends Controller
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Creates a new Article model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionStatus($id)
+    {
+        $model = Article::findOne($id);      
+        $model->is_active =  (int) !$model->is_active;
+        $model->save();
+
+       if (Yii::$app->getRequest()->getIsPjax()) {
+           /*
+            $response = Yii::$app->getResponse();
+            $destination = Url::to($url);
+            $response->getHeaders()->set('X-Pjax-Url', $destination);
+            $response->getHeaders()->set('Location', $destination);
+            return null;
+            */
+
+            //render part of view with grid
+            return $this->renderAjax($url, $params);
+        }
+       else { 
+           $this->redirect( Yii::$app->request->referrer );
+        }
+
+        /*
+        $model = new Article();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+        */
     }
 
     /**

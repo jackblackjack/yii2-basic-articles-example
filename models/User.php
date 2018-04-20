@@ -43,6 +43,21 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function afterSave($is_insert, $changedAttributes)
+    {
+        if ($is_insert) {
+            // Fetch a default role name for new registered user.
+            $roleName = \Yii::$app->params['rbac.roleOnRegister'];       
+            $roleModel = \Yii::$app->authManager->getRole($roleName);
+
+            // Assign new registered user to default role name. 
+            \Yii::$app->authManager->assign($roleModel, $this->attributes['id']);
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function findIdentity($id)
@@ -55,7 +70,20 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        return static::findOne(['access_token' => $token]);
+    }
+
+    /**
+     * Finds user by auth key.
+     *
+     * @param [string] $key
+     * @return static|null
+     */
+    public static function findByAuthKey($key)
+    {    
+        return static::findOne([
+            'auth_key' => $key
+        ]);
     }
 
     /**
@@ -141,18 +169,15 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generateAuthKey()
     {
-        $this->auth_key = Yii::$app->security->generateRandomString();
+        $this->auth_key = \Yii::$app->security->generateRandomString();
     }
 
-    public function afterSave($insert, $changedAttributes)
-    {
-        // Set the default role for user.
-        $authManager = \Yii::$app->authManager;
-        
-        $user = $authManager->getRole('user');
-        $authManager->assign($user, $insert->id);
-    }
-
+    /**
+     * Finds user by password reset token.
+     *
+     * @param [string] $token
+     * @return static|null
+     */
     public static function findByPasswordResetToken($token)
     {
         if (!static::isPasswordResetTokenValid($token)) {
@@ -165,9 +190,14 @@ class User extends ActiveRecord implements IdentityInterface
         ]);
     }
      
+    /**
+     * Check for password reset token is valid.
+     *
+     * @param [string] $token
+     * @return bool
+     */
     public static function isPasswordResetTokenValid($token)
     {
-     
         if (empty($token)) {
             return false;
         }
@@ -177,15 +207,34 @@ class User extends ActiveRecord implements IdentityInterface
         return $timestamp + $expire >= time();
     }
      
+    /**
+     * Generates new password reset token and store it into model.
+     * @return null
+     */
     public function generatePasswordResetToken()
     {
         $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
      
+    /**
+     * Clean up exists password reset token into model.
+     * @return null
+     */
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
     }
+
+    /**
+     * Sets a value for activity status attribute.
+     *
+     * @param mixed $val
+     */
+    public function setActive($val)
+    {
+        $this->is_active = (int) $val;
+    }
+
 
     /**
      * @return \yii\db\ActiveQuery

@@ -65,8 +65,12 @@ $config = [
         ]
     ],
     'modules' => [
+        'redactor' => 'yii\redactor\RedactorModule',
         'rbac' => [
             'class' => 'yii2mod\rbac\Module',
+            'as access' => [
+                'class' => yii2mod\rbac\filters\AccessControl::className()
+            ]
         ],
     ],
     'params' => $params,
@@ -78,7 +82,7 @@ if (YII_ENV_DEV) {
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        'allowedIPs' => ['127.0.0.1', '::1', $_SERVER['REMOTE_ADDR']]
+        'allowedIPs' => ['127.0.0.1', '::1', '192.168.83.1']
         
     ];
 
@@ -86,7 +90,7 @@ if (YII_ENV_DEV) {
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        'allowedIPs' => ['127.0.0.1', '::1',  $_SERVER['REMOTE_ADDR']],
+        'allowedIPs' => ['127.0.0.1', '::1', '192.168.83.1'],
     ];
 }
 

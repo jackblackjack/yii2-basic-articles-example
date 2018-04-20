@@ -11,7 +11,9 @@
 Установите [VirtualBox](https://www.virtualbox.org/) и [Vagrant](https://www.vagrantup.com/).
 
 **2.** Создайте типовое базовое приложение yii2
+```
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+```
 
 **3.** Создайте собственный репозиторий на github.com
 ```

@@ -10,7 +10,9 @@ use yii\base\InvalidParamException;
  */
 class ResetPasswordForm extends Model
 {
- 
+    /**
+     * @var string
+     */
     public $password;
  
     /**
@@ -27,7 +29,6 @@ class ResetPasswordForm extends Model
      */
     public function __construct($token, $config = [])
     {
- 
         if (empty($token) || !is_string($token)) {
             throw new InvalidParamException('Password reset token cannot be blank.');
         }

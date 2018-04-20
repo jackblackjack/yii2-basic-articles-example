@@ -17,7 +17,7 @@ class Article extends ActiveRecord
     public function rules()
     {
         return [
-            [ ['title', 'preview_data', 'full_data'], 'required' ]
+            [ ['title', 'preview_data', 'full_data', 'is_active'], 'required' ]
         ];
     }
 

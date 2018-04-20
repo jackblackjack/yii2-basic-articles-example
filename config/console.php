@@ -49,6 +49,9 @@ $config = [
     'modules' => [
         'rbac' => [
             'class' => 'yii2mod\rbac\ConsoleModule',
+            'as access' => [
+                'class' => yii2mod\rbac\filters\AccessControl::className()
+            ]
         ],
     ],
 ];
