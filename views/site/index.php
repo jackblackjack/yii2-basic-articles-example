@@ -26,11 +26,10 @@ $this->title = 'My Yii Application';
                             </div>
                         ',
                         'pager' => [
-                            'maxButtonCount' => 5,
                             'prevPageLabel' => '<',
                             'nextPageLabel' => '>',
                             'firstPageLabel' => '<<',
-                            'lastPageLabel' => '>>',
+                            'lastPageLabel' => '>>'
                         ],
                     ]);
                 Pjax::end(); ?>
