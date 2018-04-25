@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use yii\web\Response;
 use app\models\Article;
 use app\models\ArticleSearch;
 use yii\web\Controller;

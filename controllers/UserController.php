@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use Yii;
+use yii\web\Response;
+
 use app\models\User;
 use app\models\UserSearch;
 use yii\web\Controller;
@@ -133,5 +135,22 @@ class UserController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    public function actionStatus($id)
+    {
+        if (! ($model = User::findOne($id))) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested user does not exist.'));
+        }
+
+        // Change active status value.
+        $model->is_active = !$model->is_active;
+        $is_saved = $model->save();
+
+        return \Yii::createObject([
+            'class' => 'yii\web\Response',
+            'format' => Response::FORMAT_JSON,
+            'data' => [ 'result'   => (int) $is_saved ]
+        ]);
     }
 }
