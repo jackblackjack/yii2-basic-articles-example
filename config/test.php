@@ -7,6 +7,7 @@ $db = require __DIR__ . '/test_db.php';
  */
 return [
     'id' => 'basic-tests',
+    'homeUrl' => '/index-test.php',
     'basePath' => dirname(__DIR__),
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -20,8 +21,10 @@ return [
         ],
         'assetManager' => [
             'basePath' => __DIR__ . '/../web/assets',
+            'forceCopy' => true 
         ],
         'urlManager' => [
+            'enablePrettyUrl' => false,
             'showScriptName' => true,
         ],
         'user' => [
@@ -52,7 +55,12 @@ return [
     ],
     'params' => $params,
     'modules' => [
-        'redactor' => 'yii\redactor\RedactorModule',
+        'redactor' => [
+            'class' => 'yii\redactor\RedactorModule',
+            'uploadDir' => '@webroot/upload/article',
+            'uploadUrl' => '@web/upload/article',
+            'imageAllowExtensions'=>['jpg','png','gif']
+        ],
         'rbac' => [
             'class' => 'yii2mod\rbac\Module',
             /*
@@ -74,7 +82,8 @@ if (YII_DEBUG) {
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        'allowedIPs' => ['127.0.0.1', '::1', '192.168.83.1']       
+        'allowedIPs' => ['127.0.0.1', '::1', '192.168.83.1']  
     ];
 }
 
+return $config;

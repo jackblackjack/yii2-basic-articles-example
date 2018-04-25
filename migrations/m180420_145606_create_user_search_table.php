@@ -3,9 +3,9 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%article}}`.
+ * Handles the creation of table `{{%user_search}}`.
  */
-class m180417_233122_create_article_table extends Migration
+class m180420_145606_create_user_search_table extends Migration
 {
     /**
      * {@inheritdoc}
@@ -18,16 +18,16 @@ class m180417_233122_create_article_table extends Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
         }
 
-        $this->createTable('{{%article}}', [
+        $this->createTable('{{%user_search}}', [
             'id' => $this->primaryKey(),
-            'title' => $this->string()->notNull(),
-            'preview_data' => $this->string(),
-            'full_data' => $this->string()->notNull(),
+            'username' => $this->string()->notNull()->unique(),
+            'auth_key' => $this->string(32)->notNull(),
+            'password_hash' => $this->string()->notNull(),
+            'password_reset_token' => $this->string()->unique(),
+            'email' => $this->string()->notNull()->unique(),
             'is_active' => $this->integer(6)->notNull()->defaultValue(0),
             'created_at' => $this->integer()->notNull(),
-            'updated_at' => $this->integer()->notNull(),
-            'created_by' => $this->integer()->notNull(),
-            'updated_by' => $this->integer()->notNull(),
+            'updated_at' => $this->integer()->notNull()
         ], $tableOptions);
     }
 
@@ -36,6 +36,6 @@ class m180417_233122_create_article_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('{{%article}}');
+        $this->dropTable('{{%user_search}}');
     }
 }

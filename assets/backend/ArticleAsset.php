@@ -1,16 +1,16 @@
 <?php
 
-namespace app\assets;
+namespace app\assets\backend;
 
 use yii\web\AssetBundle;
 
-class UserNoticeAsset extends AssetBundle
+class ArticleAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
         
     public $js = [
-        'js/user-notice/togglers.js'
+        'js/article/togglers.js'
     ];
 
     public $depends = [

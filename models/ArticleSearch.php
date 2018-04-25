@@ -47,8 +47,8 @@ class ArticleSearch extends Article
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination'=>[
-                'pageSize'=>3  // <=== HAS EFFECT 
+            'pagination' => [
+                'pageSize' => 3
             ]
         ]);
 

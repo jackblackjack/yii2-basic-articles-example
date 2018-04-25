@@ -2,8 +2,11 @@
  
 namespace app\models;
  
+use Yii;
 use yii\base\Model;
 use yii\base\InvalidParamException;
+
+use app\models\User;
  
 /**
  * Sign Up activate form.
@@ -27,7 +30,7 @@ class SignUpActivateForm extends Model
         if (empty($token) || !is_string($token)) {
             throw new InvalidParamException('Activate token cannot be blank.');
         }
- 
+        
         $this->_user = User::findByAuthKey($token);
  
         if (!$this->_user) {
@@ -38,15 +41,11 @@ class SignUpActivateForm extends Model
     }
 
     /**
-     * Resets password.
-     *
-     * @return bool if password was reset.
+     * Returns a user object.
      */
-    public function activate()
+    public function getUser()
     {
-        $user = $this->_user;
-        $user->setActive(1);
-        return $user->save(false);
+        return $this->_user;
     }
 
     /**
@@ -58,8 +57,8 @@ class SignUpActivateForm extends Model
     {
         /* @var $user User */
         $user = User::findOne([
-            'email' => $this->email,
-            'is_active' => app\models\User::STATUS_ACTIVE
+            'email' => $this->_user->email,
+            'is_active' => User::STATUS_ACTIVE
         ]);
  
         if (!$user) {
@@ -73,8 +72,8 @@ class SignUpActivateForm extends Model
                 ['user' => $user]
             )
             ->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'])
-            ->setTo($this->email)
-            ->setSubject('Congratulations! ' . \Yii::$app->name)
+            ->setTo($user->email)
+            ->setSubject(sprintf(Yii::t('yii', 'Congratulations, %s'), $user->username) . \Yii::$app->name)
             ->send();
     }
 }

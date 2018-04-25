@@ -7,6 +7,9 @@ use yii\widgets\Pjax;
 use nterms\pagesize\PageSize;
 use yii\bootstrap\Alert;
 
+use app\assets\backend\ArticleAsset;
+ArticleAsset::register($this);
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ArticleSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -18,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
     
-    <?php Pjax::begin(); ?>
+    <?php $pjax_wgt = Pjax::begin(); ?> 
     <?php //echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?php if ($message = Yii::$app->session->getFlash('message')) {
@@ -44,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ]); ?>
     </div>
     
-    <?= GridView::widget([
+    <?php echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'pager' => [
@@ -63,26 +66,30 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'is_active',
                 'format' => 'raw',
-                'value' => function($model) {
-                    $icon_style = $model->is_active ? 'glyphicon-ok-circle' : 'glyphicon-ban-circle';
-                    $uri = Url::toRoute(['article/status', 'id' => $model->id]);
-                    
-                    return Html::a('<span class="glyphicon ' . $icon_style . '" aria-hidden="true"></span>', '#', [
-                        'title' => Yii::t('yii', 'Toggle status'),
-                        'aria-label' => Yii::t('yii', 'Toggle status'),
-                        'onclick' => "
-                            if (confirm('Are you sure you want to change status?')) {
-                                $.ajax('$uri', {
-                                    type: 'POST'
-                                }).done(function(data) {
-                                    $.pjax.reload({container: '#article-view'});
-                                });
-                            }
-                            return false;
-                        ",
-                    ]);
-                },
+                'value' => function($model) use ($pjax_wgt) {
 
+                    // Define icon style.
+                    $icon_style = $model->is_active ? 'glyphicon-ok-circle' : 'glyphicon-ban-circle';
+
+                    // Define hint text.
+                    $hint_text = $model->is_active ? Yii::t('yii', 'Active') : Yii::t('yii', 'Not active');
+
+                    // Build a uri.
+                    $uri = Url::toRoute([ 
+                        'article/status', 
+                        'id' => $model->id
+                    ]);
+
+                    return Html::a(
+                                '<span class="glyphicon ' . $icon_style . '" aria-hidden="true"></span> ', '#', [
+                                    'title' => Yii::t('yii', 'Toggle status'),
+                                    'aria-label' => Yii::t('yii', 'Toggle status'),
+                                    'data-url' => "{$uri}",
+                                    'data-model-id' => $model->id,
+                                    'data-confirm-text' => Yii::t('yii', 'Are you sure you want to change article status?'),
+                                    'data-container-id' => "#{$pjax_wgt->getId()}"
+                                ]) . $hint_text;
+                },
             ],
             [
                 'attribute' => 'title',

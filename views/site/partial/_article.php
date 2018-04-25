@@ -7,6 +7,6 @@ use yii\helpers\HtmlPurifier;
     <?= HtmlPurifier::process($model->preview_data) ?>
 
     <?php if (! \Yii::$app->user->isGuest): ?>
-    <?php echo Html::a('aaa') ?>
+    <p><?php echo Html::a('Полный текст &raquo;', null, ['class' => 'btn btn-default']) ?></p>
     <?php endif ?>
 </div>

@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\base\NotSupportedException;
+use yii\web\NotFoundHttpException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
@@ -26,7 +27,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::className()
         ];
     }
 
@@ -38,7 +39,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             [ [ 'is_active' ], 'default', 'value' => 0],
             [ [ 'is_active' ], 'in', 'range' => [0, 1]],
-            [ [ 'username' ], 'required' ]
+            [ ['username', 'email'], 'required' ]
         ];
     }
 
@@ -51,6 +52,10 @@ class User extends ActiveRecord implements IdentityInterface
             // Fetch a default role name for new registered user.
             $roleName = \Yii::$app->params['rbac.roleOnRegister'];       
             $roleModel = \Yii::$app->authManager->getRole($roleName);
+            
+            if (! $roleModel) {
+                throw new NotFoundHttpException(sprintf(Yii::t('app', 'Role %s is not found'), $roleName));
+            }
 
             // Assign new registered user to default role name. 
             \Yii::$app->authManager->assign($roleModel, $this->attributes['id']);
@@ -162,6 +167,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function setPassword($password)
     {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+        return $this;
     }
  
     /**
@@ -170,6 +176,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function generateAuthKey()
     {
         $this->auth_key = \Yii::$app->security->generateRandomString();
+        return $this;
     }
 
     /**
@@ -214,6 +221,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function generatePasswordResetToken()
     {
         $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
+        return $this;
     }
      
     /**
@@ -223,6 +231,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+        return $this;
     }
 
     /**
@@ -233,6 +242,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function setActive($val)
     {
         $this->is_active = (int) $val;
+        return $this;
     }
 
 

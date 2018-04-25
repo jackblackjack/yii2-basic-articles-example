@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use yii\base\Model;
@@ -17,7 +18,7 @@ class Article extends ActiveRecord
     public function rules()
     {
         return [
-            [ ['title', 'preview_data', 'full_data', 'is_active'], 'required' ]
+            [ ['title', 'preview_data', 'full_data'], 'required' ]
         ];
     }
 
@@ -27,7 +28,8 @@ class Article extends ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::className()
+            TimestampBehavior::className(),
+            BlameableBehavior::className()
         ];
     }
 

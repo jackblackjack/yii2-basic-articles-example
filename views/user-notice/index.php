@@ -4,7 +4,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
 
-use app\assets\UserNoticeAsset;
+use app\assets\backend\UserNoticeAsset;
 UserNoticeAsset::register($this);
 ?>
 <?php
@@ -69,28 +69,6 @@ UserNoticeAsset::register($this);
                 
                 Pjax::end();
                 ?>
-
-
-                <!--
-                                    'onclick' => "function(e) {
-                                        alert('aaaaaaaaaaaaaaaaaaa');
-                                        e.preventDefault();
-                                        $.pjax.reload({container: '#{$pjax_wgt->getId()}'});
-
-                                        /*
-                                        event.preventDefault();
-                                        if (confirm('Are you sure you want to change status?')) {
-                                            $.ajax('$uri', {
-                                                type: 'POST'
-                                            }).done(function(data) {
-                                                console.log('Recieved data is', data);
-                                                $.pjax.reload({container: '#{$pjax_wgt->getId()}', timeout: 20000});
-                                            });
-                                        }
-                                        return false;
-                                        */
-                                    }
-                                    ",-->
             </div>
         </div>
     </div>

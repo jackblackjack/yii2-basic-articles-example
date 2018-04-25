@@ -46,6 +46,10 @@ AppAsset::register($this);
     if (!\Yii::$app->user->isGuest && \Yii::$app->user->can('userCreateNew')) {
         $ar_items[] =  ['label' => 'Add user', 'url' => ['/user/create']];
     }
+
+    if (! \Yii::$app->user->isGuest) {
+        $ar_items[] =  ['label' => 'Notice options', 'url' => ['/user-notice/index']];
+    }
     
     $ar_items = array_merge($ar_items, [
         ['label' => 'Home', 'url' => ['/site/index']],

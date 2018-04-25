@@ -19,6 +19,7 @@ class m180417_233136_create_junction_table_for_article_and_user_tables extends M
         $this->createTable('article_user', [
             'article_id' => $this->integer(),
             'user_id' => $this->integer(),
+            'created_at' => $this->integer()->notNull(),
             'PRIMARY KEY(article_id, user_id)',
         ]);
 

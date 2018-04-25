@@ -74,12 +74,17 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        /*
         $searchModel = new ArticleSearch();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+        ]);
+        */
+
+        return $this->render('index', [
         ]);
     }
 
@@ -95,10 +100,12 @@ class SiteController extends Controller
         if ($model->load(\Yii::$app->request->post())) {
             
             if ($user = $model->signup()) {
+                
                 if ($model->sendEmail()) {
                     \Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
                     return $this->goHome();
-                } else {
+                }
+                else {
                     \Yii::$app->session->setFlash('error', 'Sorry, we are unable to sign up for email provided.');
                 }
             }
@@ -110,7 +117,7 @@ class SiteController extends Controller
     }
 
     /**
-     * Sign up activation action.
+     * Existing sign up activation action.
      *
      * @return Response|string
      */
@@ -118,16 +125,42 @@ class SiteController extends Controller
     {
         try {
             $model = new SignUpActivateForm($token);
-        } catch (InvalidParamException $e) {
+        } 
+        catch (InvalidParamException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        if ($model->validate() && $model->activate()) {
-            if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', 'Welcome!');
-            } else {
-                Yii::$app->session->setFlash('error', 'Sorry, we are unable to sign up for email provided.');
+        if ($model->validate()) {
+
+            // Update user properties.
+            $model->getUser()->setActive(true)->generateAuthKey();
+
+            // Try to save user properties.
+            if (! $model->getUser()->save() ) {
+                Yii::$app->session->setFlash('error', 
+                    Yii::t('yii', 'Sorry, error while update user.')
+                );
             }
+
+            // Try to send email.
+            if (! $model->sendEmail()) {
+                Yii::$app->session->setFlash('error', 
+                    Yii::t('yii', 'Sorry, we are unable to sign up for email provided.')
+                );
+            }
+            else {
+                // Send congrats notice.
+                Yii::$app->session->setFlash('success', 
+                    sprintf(Yii::t('yii', 'Welcome, %s!'), $model->getUser()->username)
+                );
+            }
+        } 
+        else {
+                
+            // Send notice about error.
+            Yii::$app->session->setFlash('error', 
+                Yii::t('yii', 'Sorry, account is not validated.')
+            );
         }
 
         return $this->goHome();

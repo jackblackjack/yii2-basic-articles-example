@@ -3,9 +3,9 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%article}}`.
+ * Handles the creation of table `{{%article_search}}`.
  */
-class m180417_233122_create_article_table extends Migration
+class m180420_145830_create_article_search_table extends Migration
 {
     /**
      * {@inheritdoc}
@@ -18,7 +18,7 @@ class m180417_233122_create_article_table extends Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
         }
 
-        $this->createTable('{{%article}}', [
+        $this->createTable('{{%article_search}}', [
             'id' => $this->primaryKey(),
             'title' => $this->string()->notNull(),
             'preview_data' => $this->string(),
@@ -36,6 +36,6 @@ class m180417_233122_create_article_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('{{%article}}');
+        $this->dropTable('{{%article_search}}');
     }
 }
