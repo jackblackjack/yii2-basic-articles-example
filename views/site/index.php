@@ -11,9 +11,11 @@ $this->title = 'My Yii Application';
         <div class="row">
             <div class="col-lg-8">
                 <h2>Articles</h2>
-                <?php Pjax::begin(); ?>
+                <?php Pjax::begin([ 'id' => 'articles-list' ]); ?>
 
-                <?php /*echo ListView::widget([ 
+                <?php 
+                /*
+                echo ListView::widget([ 
                         'dataProvider' => $dataProvider,
                         'itemView' => 'partial/_article',
                         'layout' => '
@@ -30,7 +32,7 @@ $this->title = 'My Yii Application';
                             'lastPageLabel' => '>>'
                         ],
                     ]);
-                    */
+                */
                 ?>
                 <?php Pjax::end(); ?>
             </div>
