@@ -8,6 +8,8 @@ use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
+use yii\bootstrap\Modal;
+
 use app\assets\AppAsset;
 
 AppAsset::register($this);
@@ -39,12 +41,22 @@ AppAsset::register($this);
     $ar_items = [];
  
 
-    if (!\Yii::$app->user->isGuest && \Yii::$app->user->can('articleCreateNew')) {
-        $ar_items[] =  ['label' => 'Add article', 'url' => ['/article/create']];
+    if (!\Yii::$app->user->isGuest) {
+        $ar_items[] =  [
+            'label' => 'Add article', 
+            'url' => ['/article/create'], 
+            'visible' => \Yii::$app->user->can('articleCreateNew'), 
+            'options' => [ 'data-modal-container-id' => '#template-modal' ]
+        ];
     }
-
-    if (!\Yii::$app->user->isGuest && \Yii::$app->user->can('userCreateNew')) {
-        $ar_items[] =  ['label' => 'Add user', 'url' => ['/user/create']];
+    
+    if (!\Yii::$app->user->isGuest) {
+        $ar_items[] =  [
+            'label' => 'Add user', 
+            'url' => ['/user/create'], 
+            'visible' => \Yii::$app->user->can('userCreateNew'), 
+            'options' => [ 'data-modal-container-id' => '#template-modal' ]
+        ];
     }
 
     if (! \Yii::$app->user->isGuest) {
@@ -98,12 +110,22 @@ AppAsset::register($this);
     </div>
 </footer>
 
+<?php 
+Modal::begin([
+    'headerOptions' => ['id' => 'modalHeader' ],
+    'id' => 'template-modal',
+    'size' => 'modal-sm',
+    'clientOptions' => [
+        'backdrop' => true,
+        'keyboard' => true
+    ]
+]) ?>
+<?php Modal::end(); ?>
 <?php $this->endBody() ?>
 
 <?php //print_r(\Yii::$app->authManager->getPermissionsByUser(\Yii::$app->user->findByUsername('admin'))); ?>
 
 <?php //echo 'User id:', \Yii::$app->user->getId(); ?>
-
 
 
 <?php //print_r(@$ar['articleCreateNew']); ?>
