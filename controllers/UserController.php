@@ -4,13 +4,13 @@ namespace app\controllers;
 
 use Yii;
 use yii\web\Response;
-
-use app\models\User;
-use app\models\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii2mod\rbac\filters\AccessControl;
+
+use app\models\User;
+use app\models\UserSearch;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -80,6 +80,13 @@ class UserController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        // Processing ajax call.
+        if (Yii::$app->getRequest()->isAjax) {
+            return $this->renderAjax('create', [
+                'model' => $model
+            ]);
         }
 
         return $this->render('create', [

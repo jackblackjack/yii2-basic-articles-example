@@ -4,12 +4,13 @@ namespace app\controllers;
 
 use Yii;
 use yii\web\Response;
-use app\models\Article;
-use app\models\ArticleSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii2mod\rbac\filters\AccessControl;
+
+use app\models\Article;
+use app\models\ArticleSearch;
 
 /**
  * ArticleController implements the CRUD actions for Article model.
@@ -79,6 +80,13 @@ class ArticleController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        // Processing ajax call.
+        if (Yii::$app->getRequest()->isAjax) {
+            return $this->renderAjax('create', [
+                'model' => $model
+            ]);
         }
 
         return $this->render('create', [
