@@ -11,6 +11,22 @@ use yii\web\IdentityInterface;
 
 class User extends ActiveRecord implements IdentityInterface
 {
+    /**
+     * Event for fire when user created other user.
+     * @var string
+     */ 
+    const EVENT_CREATE_NEW = 'EVENT_USER_CREATED_NEW';
+    
+    /**
+     * Event for fire when change user password.
+     * @var string
+     */ 
+    const EVENT_CHANGE_PASSWORD = 'EVENT_USER_CHANGE_PASSWORD';
+
+    /**
+     * Active status value.
+     * @var integer
+     */ 
     const STATUS_ACTIVE = 1;
 
     /**
@@ -39,7 +55,8 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             [ [ 'is_active' ], 'default', 'value' => 0],
             [ [ 'is_active' ], 'in', 'range' => [0, 1]],
-            [ ['username', 'email'], 'required' ]
+            [ ['username', 'email'], 'required' ],
+            [ 'email', 'email' ]
         ];
     }
 
@@ -80,7 +97,6 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Finds user by auth key.
-     *
      * @param [string] $key
      * @return static|null
      */
@@ -92,8 +108,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds user by username
-     *
+     * Finds user by username.
      * @param string $username
      * @return static|null
      */
@@ -103,8 +118,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds user by email
-     *
+     * Finds user by email.
      * @param string $email
      * @return static|null
      */
@@ -114,8 +128,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds user by username or email
-     *
+     * Finds user by username or email.
      * @param string $username_or_email
      * @return static|null
      */
@@ -149,8 +162,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Validates password
-     *
+     * Validates password.
      * @param string $password password to validate
      * @return bool if password provided is valid for current user
      */
@@ -160,13 +172,18 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Generates password hash from password and sets it to the model
-     *
+     * Generates password hash from password and sets it to the model.
      * @param string $password
      */
     public function setPassword($password)
     {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+
+        // If record is not new - generated event.
+        if (! $this->isNewRecord) {
+            $this->trigger(static::EVENT_CHANGE_PASSWORD);
+        }
+
         return $this;
     }
  
@@ -181,7 +198,6 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Finds user by password reset token.
-     *
      * @param [string] $token
      * @return static|null
      */
@@ -199,7 +215,6 @@ class User extends ActiveRecord implements IdentityInterface
      
     /**
      * Check for password reset token is valid.
-     *
      * @param [string] $token
      * @return bool
      */
@@ -236,7 +251,6 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Sets a value for activity status attribute.
-     *
      * @param mixed $val
      */
     public function setActive($val)
@@ -245,6 +259,8 @@ class User extends ActiveRecord implements IdentityInterface
         return $this;
     }
 
+
+    ///------------------
 
     /**
      * @return \yii\db\ActiveQuery

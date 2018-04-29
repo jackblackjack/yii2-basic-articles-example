@@ -39,19 +39,16 @@ $config = [
         ],
     ],
     'params' => $params,
-    /*
     'controllerMap' => [
         'fixture' => [ // Fixture generation command line.
-            'class' => 'yii\faker\FixtureController',
+            'class' => 'yii\console\controllers\FixtureController',
+            'namespace' => 'app\tests\fixtures',
         ],
     ],
-    */
     'modules' => [
         'rbac' => [
             'class' => 'yii2mod\rbac\ConsoleModule',
-            'as access' => [
-                'class' => yii2mod\rbac\filters\AccessControl::className()
-            ]
+            'controllerNamespace' => 'app\commands'
         ],
     ],
 ];

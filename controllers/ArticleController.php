@@ -35,6 +35,7 @@ class ArticleController extends Controller
                     [
                         'allow' => true,
                         'roles' => ['editor', 'admin'],
+                        'permissions' => [ 'articleManager', 'articleOwnManager' ]
                     ],
                 ]
             ],
@@ -125,33 +126,12 @@ class ArticleController extends Controller
         $model->is_active =  (int) !$model->is_active;
         $model->save();
 
-       if (Yii::$app->getRequest()->getIsPjax()) {
-           /*
-            $response = Yii::$app->getResponse();
-            $destination = Url::to($url);
-            $response->getHeaders()->set('X-Pjax-Url', $destination);
-            $response->getHeaders()->set('Location', $destination);
-            return null;
-            */
-
-            //render part of view with grid
+        if (Yii::$app->getRequest()->getIsPjax()) {
             return $this->renderAjax($url, $params);
         }
-       else { 
-           $this->redirect( Yii::$app->request->referrer );
+        else { 
+            $this->redirect( Yii::$app->request->referrer );
         }
-
-        /*
-        $model = new Article();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-        */
     }
 
     /**

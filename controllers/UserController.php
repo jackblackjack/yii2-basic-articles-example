@@ -35,6 +35,7 @@ class UserController extends Controller
                     [
                         'allow' => true,
                         'roles' => ['admin'],
+                        'permissions' => [ 'userManager' ],
                     ],
                 ],
             ]
@@ -79,6 +80,10 @@ class UserController extends Controller
         $model = new User();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            
+            // Fire event of created new user.
+            $model->trigger(User::EVENT_USER_CREATED_NEW);
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -113,6 +118,22 @@ class UserController extends Controller
             'model' => $model,
         ]);
     }
+
+    /*
+
+        // Call parent method.
+        parent::afterSave($insert, $changedAttributes);
+
+        // Fire events.
+        if ($insert) {
+            if ($this->is_active) {
+                $this->trigger(static::EVENT_NEW_AND_ACTIVE);
+            }
+        }
+        else if (isset($changedAttributes['is_active']) && (bool) $changedAttributes['is_active']) {
+            $this->trigger(static::EVENT_ACTIVATE);
+        }
+    */
 
     /**
      * Deletes an existing User model.
