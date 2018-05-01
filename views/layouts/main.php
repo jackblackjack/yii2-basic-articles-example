@@ -45,7 +45,7 @@ AppAsset::register($this);
         $ar_items[] =  [
             'label' => 'Add article', 
             'url' => ['/article/create'], 
-            'visible' => \Yii::$app->user->can('articleCreateNew'), 
+            'visible' => \Yii::$app->user->can('editor') || \Yii::$app->user->can('articleManager'), 
             'options' => [ 'data-modal-container-id' => '#template-modal' ]
         ];
     }
@@ -54,7 +54,7 @@ AppAsset::register($this);
         $ar_items[] =  [
             'label' => 'Add user', 
             'url' => ['/user/create'], 
-            'visible' => \Yii::$app->user->can('userCreateNew'), 
+            'visible' => \Yii::$app->user->can('userManager'), 
             'options' => [ 'data-modal-container-id' => '#template-modal' ]
         ];
     }
@@ -116,25 +116,23 @@ Modal::begin([
     'id' => 'template-modal',
     'size' => 'modal-sm',
     'clientOptions' => [
-        'backdrop' => true,
+        'backdrop' => 'static',
         'keyboard' => true
     ]
 ]) ?>
 <?php Modal::end(); ?>
 <?php $this->endBody() ?>
 
-<?php //print_r(\Yii::$app->authManager->getPermissionsByUser(\Yii::$app->user->findByUsername('admin'))); ?>
-
-<?php //echo 'User id:', \Yii::$app->user->getId(); ?>
-
-
-<?php //print_r(@$ar['articleCreateNew']); ?>
-
-
-<?php //print_r(\Yii::$app->authManager->getAssignments(\Yii::$app->user->getId())); ?>
-
-<?php //var_dump(\Yii::$app->user->can('articleCreateNew', [], false)); ?>
-<?php //var_dump(\Yii::$app->user->can('articleCreateNew')); ?>
+<div>
+<?php if (! \Yii::$app->user->isGuest): ?>
+    <?php //print_r(\Yii::$app->authManager->getPermissionsByUser(\Yii::$app->user->getId())); ?>
+    <hr />  
+    <?php //var_dump(\Yii::$app->user->can('editor')); ?>
+    <?php //var_dump(\Yii::$app->user->can('articleOwnManager')); ?>
+    <?php //var_dump(\Yii::$app->user->can('articleManager')); ?>
+    <?php //var_dump(\Yii::$app->user->can('userManager')); ?>
+<?php endif ?>
+</div>
 
 </body>
 </html>

@@ -43,6 +43,18 @@ class UserController extends Controller
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ]
+        ];
+    }
+
+    /**
      * Lists all User models.
      * @return mixed
      */
@@ -79,12 +91,15 @@ class UserController extends Controller
     {
         $model = new User();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            
-            // Fire event of created new user.
-            $model->trigger(User::EVENT_USER_CREATED_NEW);
+        if ($model->load(Yii::$app->request->post())) {
 
-            return $this->redirect(['view', 'id' => $model->id]);
+            $model->setPassword(Yii::$app->getSecurity()->generateRandomString(6));
+            $model->generateAuthKey();
+            
+            if ($model->save()) {
+                $model->trigger(User::EVENT_CREATE_NEW);
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         // Processing ajax call.

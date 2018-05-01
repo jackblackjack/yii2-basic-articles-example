@@ -1,12 +1,40 @@
 <?php
 
-namespace common\models;
+namespace app\models;
 
-use common\models\Article;
-use common\models\User;
+use yii\db\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
 
-class ArticleUser extends \yii\db\ActiveRecord
+use app\models\Article;
+use app\models\User;
+
+class ArticleUser extends ActiveRecord
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function transactions()
+    {
+        return [
+            self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at']
+                ],
+            ],
+        ];
+    }
+
     /**
      * @inheritdoc
      */

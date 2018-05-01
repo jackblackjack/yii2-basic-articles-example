@@ -9,6 +9,10 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
+use app\models\Article;
+use app\models\ArticleUser;
+use app\models\SignUpForm;
+
 class User extends ActiveRecord implements IdentityInterface
 {
     /**
@@ -30,11 +34,29 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_ACTIVE = 1;
 
     /**
+     * {@inheritDoc}
+     */
+    public function init()
+    {
+        $this->on(static::EVENT_CREATE_NEW, [ $this, 'sendActivateEmail' ]);
+    }
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
     {
         return '{{%user}}';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function transactions()
+    {
+        return [
+            self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
+        ];
     }
 
     /**
@@ -77,6 +99,22 @@ class User extends ActiveRecord implements IdentityInterface
             // Assign new registered user to default role name. 
             \Yii::$app->authManager->assign($roleModel, $this->attributes['id']);
         }
+    }
+
+    /**
+     * User signup action.
+     */
+    public static function signup($ar_userdata)
+    {
+        $form = new SignUpForm();
+
+        if ($form->load($ar_userdata)) {           
+            if (($user = $form->signup()) && $user->sendActivateEmail()) {
+                return $form;
+            }
+        }
+
+        return $form;
     }
 
     /**
@@ -259,6 +297,33 @@ class User extends ActiveRecord implements IdentityInterface
         return $this;
     }
 
+    /**
+     * Sends an email with a link, for activate user.
+     * @return bool whether the email was send
+     */
+    public function sendActivateEmail()
+    {
+        /* @var $user User */
+        $user = User::findOne([
+            'email' => $this->email
+        ]);
+ 
+        if (!$user) {
+            return false;
+        }
+  
+        return \Yii::$app
+            ->mailer
+            ->compose(
+                ['html' => 'signUpActivateToken-html', 'text' => 'signUpActivateToken-text'],
+                ['user' => $user]
+            )
+            ->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'])
+            ->setTo($this->email)
+            ->setSubject('Activate account token ' . \Yii::$app->name)
+            ->send();
+    }
+
 
     ///------------------
 
@@ -270,11 +335,9 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasOne(User::className(), ['id' => 'created_by']);
     }
 
-    public function getGroup()
+    public function getReadedArticles()
     {
-        /*
-        return $this->hasMany(Tag::className(), ['id' => 'tag_id'])
-            ->viaTable('post_tag', ['post_id' => 'id']);
-        */
+        return $this->hasMany(Article::className(), [ 'id' => 'article_id' ])
+                        ->viaTable(ArticleUser::tableName(), [ 'user_id' => 'id' ]);
     }
 }

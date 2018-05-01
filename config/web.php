@@ -55,7 +55,7 @@ $config = [
         */
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
-            'defaultRoles' => ['guest', 'user', 'editor', 'admin'],
+            'defaultRoles' => ['user'],
         ],
         'i18n' => [
             'translations' => [

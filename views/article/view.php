@@ -12,9 +12,9 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="article-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
+        <?= Html::a(Yii::t('app', 'Set active'), ['status', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
@@ -25,17 +25,15 @@ $this->params['breadcrumbs'][] = $this->title;
         ]) ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'title',
-            'preview_data',
-            'full_data',
-            'is_active',
-            'created_at',
-            'updated_at',
-        ],
-    ]) ?>
-
+    <h2><?php echo Html::encode($model->title) ?></h2>
+    <p>
+        <?php echo $model->full_data ?>
+    </p>
+    <hr />
+    <p>
+        <dl>
+            <dt><?php echo Yii::t('app', 'Created at') ?></dt>
+            <dd><?php echo \Yii::$app->formatter->asDatetime($model->created_at, 'long'); ?></dd>
+        </dl>
+    </p>
 </div>

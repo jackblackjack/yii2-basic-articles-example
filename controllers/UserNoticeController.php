@@ -37,6 +37,18 @@ class UserNoticeController extends \yii\web\Controller
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ]
+        ];
+    }
+
     public function actionIndex()
     {
         // Build query for fetch actual values of notices options.

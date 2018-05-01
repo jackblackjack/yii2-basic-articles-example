@@ -8,7 +8,9 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii2mod\rbac\filters\AccessControl;
+use yii\db\Expression;
 
+use app\models\User;
 use app\models\Article;
 use app\models\ArticleSearch;
 
@@ -43,6 +45,18 @@ class ArticleController extends Controller
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ]
+        ];
+    }
+
+    /**
      * Lists all Article models.
      * @return mixed
      */
@@ -64,6 +78,19 @@ class ArticleController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    /**
+     * Displays a single Article model.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionRead($id)
     {
         return $this->render('view', [
             'model' => $this->findModel($id),

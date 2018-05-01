@@ -1,4 +1,5 @@
 <?php
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
 ?>
@@ -7,6 +8,7 @@ use yii\helpers\HtmlPurifier;
     <?= HtmlPurifier::process($model->preview_data) ?>
 
     <?php if (! \Yii::$app->user->isGuest): ?>
-    <p><?php echo Html::a('Полный текст &raquo;', null, ['class' => 'btn btn-default']) ?></p>
+    <p><?php echo Html::a('Полный текст &raquo;', Url::toRoute([ 'article/view', 'id' => $model->id ]), ['class' => 'btn btn-default']) ?></p>
     <?php endif ?>
 </div>
+                    

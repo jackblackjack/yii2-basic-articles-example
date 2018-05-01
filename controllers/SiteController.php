@@ -8,6 +8,8 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 
+use app\models\User;
+
 //use app\models\Article;
 use app\models\ArticleSearch;
 
@@ -96,7 +98,7 @@ class SiteController extends Controller
             
             if ($user = $model->signup()) {
                 
-                if ($model->sendEmail()) {
+                if ($user->sendActivateEmail()) {
                     \Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
                     return $this->goHome();
                 }

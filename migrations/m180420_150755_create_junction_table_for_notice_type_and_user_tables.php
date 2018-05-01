@@ -20,6 +20,8 @@ class m180420_150755_create_junction_table_for_notice_type_and_user_tables exten
             'notice_type_id' => $this->integer(),
             'user_id' => $this->integer(),
             'created_at' => $this->integer()->notNull(),
+            'updated_at' => $this->integer()->notNull(),
+            'is_readed' => $this->integer(6)->notNull()->defaultValue(0),
             'PRIMARY KEY(notice_type_id, user_id)',
         ]);
 

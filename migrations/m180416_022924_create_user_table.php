@@ -27,7 +27,8 @@ class m180416_022924_create_user_table extends Migration
             'email' => $this->string()->notNull()->unique(),
             'is_active' => $this->integer(6)->notNull()->defaultValue(0),
             'created_at' => $this->integer()->notNull(),
-            'updated_at' => $this->integer()->notNull()
+            'updated_at' => $this->integer()->notNull(),
+            'last_login_at' => $this->integer()
         ], $tableOptions);
     }
 

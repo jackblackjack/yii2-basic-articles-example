@@ -3,6 +3,8 @@ use yii\widgets\ListView;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
 
+use nterms\pagesize\PageSize;
+
 $this->title = 'My Yii Application';
 ?>
 <div class="site-index">
@@ -13,8 +15,23 @@ $this->title = 'My Yii Application';
                 <h2>Articles</h2>
                 <?php Pjax::begin([ 'id' => 'articles-list' ]); ?>
 
+                <div class="pull-right">
+                    <?php echo PageSize::widget([
+                        'label' => 'Articles on page',
+                        'defaultPageSize' => 20,
+                        'pageSizeParam' => 'articles-per-page',
+                        'sizes' => [ 10 => 10, 20 => 20, 50 => 50 ],
+                        'options' => ['change' => 'alert("a")']
+                    ]); ?>
+                    <!--
+                        $contentToolbar = \nterms\pagesize\PageSize::widget([
+                            'defaultPageSize' => \Yii::$app->params['tiposdoc.defaultPageSize'], 
+                            'sizes' => \Yii::$app->params['tiposdoc.sizes'], 
+                            'label' => '', 'options' => ['class' => 'btn btn-default', 'title' => 'Cantidad de elementos por página']]);
+                        -->
+                </div>
+
                 <?php 
-                /*
                 echo ListView::widget([ 
                         'dataProvider' => $dataProvider,
                         'itemView' => 'partial/_article',
@@ -32,7 +49,6 @@ $this->title = 'My Yii Application';
                             'lastPageLabel' => '>>'
                         ],
                     ]);
-                */
                 ?>
                 <?php Pjax::end(); ?>
             </div>

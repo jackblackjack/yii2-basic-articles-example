@@ -11,16 +11,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Articles'), 'url' =>
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<?php
-/*
-Modal::begin([
-    'header' => '<h2>Hello world</h2>',
-    'toggleButton' => ['label' => 'click me'],
-    'footer' => 'Низ окна',
-]);
-*/
-?>
-
 <div class="article-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
@@ -30,5 +20,3 @@ Modal::begin([
     ]) ?>
 
 </div>
-
-<?php //Modal::end();

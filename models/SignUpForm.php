@@ -55,32 +55,4 @@ class SignUpForm extends Model
         
         return $user->save() ? $user : null;
     }
-
-    /**
-     * Sends an email with a link, for activate user.
-     *
-     * @return bool whether the email was send
-     */
-    public function sendEmail()
-    {
-        /* @var $user User */
-        $user = User::findOne([
-            'email' => $this->email
-        ]);
- 
-        if (!$user) {
-            return false;
-        }
-  
-        return \Yii::$app
-            ->mailer
-            ->compose(
-                ['html' => 'signUpActivateToken-html', 'text' => 'signUpActivateToken-text'],
-                ['user' => $user]
-            )
-            ->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'])
-            ->setTo($this->email)
-            ->setSubject('Activate account token ' . \Yii::$app->name)
-            ->send();
-    }
 }
