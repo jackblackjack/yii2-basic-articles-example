@@ -37,9 +37,19 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
     
     <?php $pjax_wgt = Pjax::begin(); ?>
-    <?= GridView::widget([
+    
+    <div class="pull-right">
+        <?php echo PageSize::widget([
+            'label' => 'Items on page',
+            'defaultPageSize' => current(array_keys(\Yii::$app->params['pagination.perpage.begin'])),
+            'sizes' => \Yii::$app->params['pagination.perpage.default'],
+        ]); ?>
+    </div>
+
+    <?php echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'filterSelector' => 'select[name="per-page"]',
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             ['class' => 'yii\grid\ActionColumn'],

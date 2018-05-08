@@ -27,6 +27,12 @@ class Article extends ActiveRecord
     const EVENT_ACTIVATE = 'EVENT_ARTICLE_ACTIVATE';
 
     /**
+     * Active status value.
+     * @var integer
+     */ 
+    const STATUS_ACTIVE = 1;
+
+    /**
      * {@inheritDoc}
      */
     public function init()

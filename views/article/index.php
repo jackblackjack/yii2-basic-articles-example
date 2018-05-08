@@ -43,14 +43,15 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="pull-right">
         <?php echo PageSize::widget([
             'label' => 'Items on page',
-            'defaultPageSize' => 20,
-            'sizes' => [ 10 => 10, 20 => 20, 50 => 50 ],
+            'defaultPageSize' => current(array_keys(\Yii::$app->params['pagination.perpage.begin'])),
+            'sizes' => \Yii::$app->params['pagination.perpage.default'],
         ]); ?>
     </div>
     
     <?php echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'filterSelector' => 'select[name="per-page"]',
         'pager' => [
             'maxButtonCount' => 5,
             'prevPageLabel' => '<',
@@ -117,10 +118,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'visibleButtons' => [
                     'update' => function ($model) {
-                        return \Yii::$app->user->can('articleCanEditIfOwner', ['post' => $model]);
+                        return \Yii::$app->user->can('editor', ['post' => $model]) || \Yii::$app->user->can('articleManager', ['post' => $model]);
                     },
                     'delete' => function ($model) {
-                        return \Yii::$app->user->can('articleCanDeleteIfOwner', ['post' => $model]);
+                        return \Yii::$app->user->can('editor', ['post' => $model]) || \Yii::$app->user->can('articleManager', ['post' => $model]);
                     },
                 ],
             ],

@@ -13,8 +13,13 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="article-view">
 
     <p>
-    <?php if (\Yii::$app->user->can('editor') || \Yii::$app->user->can('articleManager')): ?> 
-        <?= Html::a(Yii::t('app', 'Set active'), ['status', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+    <?php if (\Yii::$app->user->can('editor') || \Yii::$app->user->can('articleManager')): ?>
+        
+        <?php if ($model->is_active): ?>
+            <?php echo Html::a(Yii::t('app', 'Deactivate'), ['status', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?php else: ?>
+            <?php echo Html::a(Yii::t('app', 'Set active'), ['status', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?php endif ?>
         
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
@@ -29,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h2><?php echo Html::encode($model->title) ?></h2>
     <p>
-        <?php if (\Yii::$app->user->isGuest): ?>
+        <?php if (! \Yii::$app->user->isGuest): ?>
             <?php echo $model->full_data ?>
         <?php else:  ?>
             <?php echo $model->preview_data ?>

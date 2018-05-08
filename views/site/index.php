@@ -14,38 +14,37 @@ $this->title = 'My Yii Application';
             <div class="col-lg-8">
                 <h2>Articles</h2>
 
-                <div class="pull-right">
-
-                    <?php Pjax::begin([
-                            'id' => 'articles-per-page-cursor', 
-                            'formSelector' => '#articles-per-page select',
-                            'timeout' => \Yii::$app->params['pjax.timeout.default']
-                        ]) ?>
-                        <?= Html::beginForm(['site/index'], 'get', ['data-pjax' => 0, 'id' => 'articles-per-page']); ?>
-                        <?php echo Html::label(\Yii::t('app', 'Articles on page')) ?>
-                        <?= Html::dropDownList('per-page', 
-                            \Yii::$app->getRequest()->getQueryParam('per-page') != NULL ? 
-                            \Yii::$app->getRequest()->getQueryParam('per-page') : 
-                                \Yii::$app->params['pagination.perpage.begin'], 
-                                \Yii::$app->params['pagination.perpage.default'],
-                                [
-                                    'class' => 'form-control',
-                                    'style' => 'display: inline-block; width: 5em'
-                                ])
-                        ?>
-                        <?= Html::submitButton('Ok', ['class' => 'btn btn-sx btn-primary']) ?>
-                        <?= Html::endForm() ?>
-                    <?php Pjax::end(); ?>
-
-                    
-                </div>
-
                 <?php $pjax_wgt = Pjax::begin([ 
                     'id' => 'articles-list',
                     'enablePushState' => true,
                     'enableReplaceState' => false,
                     'timeout' => \Yii::$app->params['pjax.timeout.default']
                 ]); ?>
+                
+                <div class="pull-right">
+                    <?= Html::beginForm(['site/index'], 'get', ['data-pjax' => 1, 'id' => 'articles-per-page']); ?>
+                    <?php echo Html::label(\Yii::t('app', 'Articles on page')) ?>
+                    
+                    <?php foreach(\Yii::$app->getRequest()->getQueryParams() as $name => $value): ?>
+                        <?php $s_name = strtolower($name) ?>
+                        <?php if ('per-page' !== $s_name && ! in_array($s_name, \Yii::$app->params['queryparams.ignore.names'])): ?>
+                            <?php echo Html::hiddenInput($name, $value) ?>
+                        <?php endif ?>
+                    <?php endforeach ?>
+
+                    <?= Html::dropDownList('per-page', 
+                        null !== \Yii::$app->getRequest()->getQueryParam('per-page') ? 
+                        \Yii::$app->getRequest()->getQueryParam('per-page') : 
+                            \Yii::$app->params['pagination.perpage.begin'], 
+                            \Yii::$app->params['pagination.perpage.default'],
+                            [
+                                'class' => 'form-control',
+                                'style' => 'display: inline-block; width: 5em'
+                            ])
+                    ?>
+                    <?= Html::submitButton('Ok', ['class' => 'btn btn-sx btn-primary']) ?>
+                    <?= Html::endForm() ?>
+                </div>
 
                 <?php 
                 echo ListView::widget([ 
@@ -66,8 +65,7 @@ $this->title = 'My Yii Application';
                         ',
                         'pager' => [
                             'linkOptions'=>[
-                                'data-pjax' => 1,
-                                'data-container-id' => "#{$pjax_wgt->getId()}"
+                                'data-pjax' => 1
                             ],
                             'prevPageLabel' => '<',
                             'nextPageLabel' => '>',

@@ -9,8 +9,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 
 use app\models\User;
-
-//use app\models\Article;
+use app\models\Article;
 use app\models\ArticleSearch;
 
 use app\models\SignUpForm;
@@ -77,7 +76,10 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $searchModel = new ArticleSearch();
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+
+        // Build data provider.
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andFilterWhere([ '=', 'is_active', Article::STATUS_ACTIVE ]);
 
         return $this->render('index', [
             'searchModel' => $searchModel,

@@ -43,10 +43,15 @@ class UserSearch extends User
     {
         $query = User::find();
 
-        // add conditions that should always apply here
+        // Define a page size param.
+        $i_pageSize = \Yii::$app->getRequest()->getQueryParam('per-page') ?: 
+            current(array_keys(\Yii::$app->params['pagination.perpage.begin']));
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => $i_pageSize
+            ]
         ]);
 
         $this->load($params);
