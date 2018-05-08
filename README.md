@@ -1,6 +1,6 @@
 <p align="center">
     <h1 align="center">Простейший новостной сайт с авторизацией и оповещением пользователей о событиях<h1>
-    <h2 align="center">С использованием [базового шаблона yii2](https://github.com/yiisoft/yii2-app-basic)</h2>
+    <h2 align="center">С использованием базового шаблона yii2 (https://github.com/yiisoft/yii2-app-basic)</h2>
     <br>
 </p>
 
