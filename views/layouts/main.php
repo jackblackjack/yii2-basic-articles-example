@@ -42,20 +42,39 @@ AppAsset::register($this);
 
     if (!\Yii::$app->user->isGuest) {
         $ar_items[] =  [
-            'label' => 'Add article', 
-            'url' => ['/article/create'], 
+            'label' => 'Articles', 
             'visible' => \Yii::$app->user->can('editor') || \Yii::$app->user->can('articleManager'), 
-            'options' => [ 'data-modal-container-id' => '#template-modal' ]
+            'items' => [
+                [
+                    'label' => 'Add article (modal)', 
+                    'url' => ['/article/create'], 
+                    'options' => [ 'data-modal-container-id' => '#template-modal' ]
+                ],
+                [
+                    'label' => 'Articles list', 
+                    'url' => ['/article/index'], 
+                ],
+            ]
         ];
     }
     
     if (!\Yii::$app->user->isGuest) {
-        $ar_items[] =  [
-            'label' => 'Add user', 
-            'url' => ['/user/create'], 
-            'visible' => \Yii::$app->user->can('userManager'), 
-            'options' => [ 'data-modal-container-id' => '#template-modal' ]
-        ];
+        $ar_items[] =  
+            [
+                'label' => 'Users',
+                'visible' => \Yii::$app->user->can('userManager'), 
+                'items' => [
+                    [
+                        'label' => 'Add user (modal)', 
+                        'url' => ['/user/create'], 
+                        'options' => [ 'data-modal-container-id' => '#template-modal' ]
+                    ],
+                    [
+                        'label' => 'Users list', 
+                        'url' => ['/user/index']
+                    ],
+                ]
+            ];
     }
 
     if (! \Yii::$app->user->isGuest) {
@@ -122,7 +141,7 @@ Modal::begin([
 <?php Modal::end(); ?>
 <?php $this->endBody() ?>
 
-<div>
+<!--div>
 <?php if (! \Yii::$app->user->isGuest): ?>
     <?php //print_r(\Yii::$app->authManager->getPermissionsByUser(\Yii::$app->user->getId())); ?>
     <hr />  
@@ -131,7 +150,7 @@ Modal::begin([
     <?php //var_dump(\Yii::$app->user->can('articleManager')); ?>
     <?php //var_dump(\Yii::$app->user->can('userManager')); ?>
 <?php endif ?>
-</div>
+</div-->
 
 </body>
 </html>
