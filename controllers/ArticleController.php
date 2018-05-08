@@ -128,6 +128,13 @@ class ArticleController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        // Processing ajax call.
+        if (Yii::$app->getRequest()->isAjax) {
+            return $this->renderAjax('update', [
+                'model' => $model
+            ]);
+        }
+        
         return $this->render('update', [
             'model' => $model,
         ]);

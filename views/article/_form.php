@@ -11,24 +11,25 @@ use yii\widgets\Pjax;
 ?>
 
 <?php Pjax::begin([
-    'id' => 'article-create',
+    'id' => 'article-edit-container',
     'enablePushState' => false,
     'enableReplaceState' => false,
-    'formSelector' => 'article-create'
+    'formSelector' => 'article-edit-form',
+    'timeout' => \Yii::$app->params['pjax.timeout.default']
 ]); ?>
 
 <div class="article-form">
 
     <?php $form = ActiveForm::begin([
-        'id' => 'article-create',
-        'action' => Url::toRoute([ 'article/create' ]),
+        'id' => 'article-edit-form',
+        'action' => ($model->isNewRecord ? Url::toRoute([ 'article/create' ]) : Url::toRoute([ 'article/update', 'id' => $model->id ])),
         'enableClientValidation' => true,
         'options' => [ 'data-pjax' => true ]
     ]); ?>
 
     <?= $form->field($model, 'id')->hiddenInput()->label(false) ?>
 
-    <?php Pjax::begin(['id' => 'active-toggle']) ?>
+    <?php Pjax::begin(['id' => 'active-toggle', 'timeout' => \Yii::$app->params['pjax.timeout.default']]) ?>
         <?= $form->field($model, 'is_active')->checkbox() ?>
     <?php Pjax::end(); ?>
 
@@ -43,8 +44,7 @@ use yii\widgets\Pjax;
             $model->isNewRecord ? 'Save' : 'Update', 
             [
                 'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
-                'data-method' => 'post', 
-                'data-pjax' => 'true' 
+                'data-method' => 'post'
             ]) ?>
     </div>
 
@@ -52,7 +52,3 @@ use yii\widgets\Pjax;
 
 </div>
 <?php Pjax::end() ?>
-<?php $this->registerJs("
-$(document).on('submit', 'form[data-pjax]', function(event) {
-    $.pjax.submit(event, '#article-create')
-})"); ?>

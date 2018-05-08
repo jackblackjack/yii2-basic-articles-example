@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
     <?php endif ?>
     
-    <?php $pjax_wgt = Pjax::begin(); ?> 
+    <?php $pjax_wgt = Pjax::begin(['timeout' => \Yii::$app->params['pjax.timeout.default']]); ?> 
     <div class="pull-right">
         <?php echo PageSize::widget([
             'label' => 'Items on page',
@@ -116,6 +116,14 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
+                'buttons' => [
+                    'update' => function ($url, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+                                    'title' => Yii::t('app', 'Update'),
+                                    'data-modal-container-id' => '#template-modal'
+                        ]);
+                    }
+                ],
                 'visibleButtons' => [
                     'update' => function ($model) {
                         return \Yii::$app->user->can('editor', ['post' => $model]) || \Yii::$app->user->can('articleManager', ['post' => $model]);
