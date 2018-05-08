@@ -1,4 +1,5 @@
 <?php
+use yii\helpers\Html;
 use yii\widgets\ListView;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
@@ -9,44 +10,70 @@ $this->title = 'My Yii Application';
 ?>
 <div class="site-index">
     <div class="body-content">
-
         <div class="row">
             <div class="col-lg-8">
                 <h2>Articles</h2>
-                <?php Pjax::begin([ 'id' => 'articles-list' ]); ?>
 
                 <div class="pull-right">
-                    <?php echo PageSize::widget([
-                        'label' => 'Articles on page',
-                        'defaultPageSize' => 20,
-                        'pageSizeParam' => 'articles-per-page',
-                        'sizes' => [ 10 => 10, 20 => 20, 50 => 50 ],
-                        'options' => ['change' => 'alert("a")']
-                    ]); ?>
-                    <!--
-                        $contentToolbar = \nterms\pagesize\PageSize::widget([
-                            'defaultPageSize' => \Yii::$app->params['tiposdoc.defaultPageSize'], 
-                            'sizes' => \Yii::$app->params['tiposdoc.sizes'], 
-                            'label' => '', 'options' => ['class' => 'btn btn-default', 'title' => 'Cantidad de elementos por página']]);
-                        -->
+
+                    <?php Pjax::begin([
+                            'id' => 'articles-per-page-cursor', 
+                            'formSelector' => '#articles-per-page select',
+                            'timeout' => \Yii::$app->params['pjax.timeout.default']
+                        ]) ?>
+                        <?= Html::beginForm(['site/index'], 'get', ['data-pjax' => 0, 'id' => 'articles-per-page']); ?>
+                        <?php echo Html::label(\Yii::t('app', 'Articles on page')) ?>
+                        <?= Html::dropDownList('per-page', 
+                            \Yii::$app->getRequest()->getQueryParam('per-page') != NULL ? 
+                            \Yii::$app->getRequest()->getQueryParam('per-page') : 
+                                \Yii::$app->params['pagination.perpage.begin'], 
+                                \Yii::$app->params['pagination.perpage.default'],
+                                [
+                                    'class' => 'form-control',
+                                    'style' => 'display: inline-block; width: 5em'
+                                ])
+                        ?>
+                        <?= Html::submitButton('Ok', ['class' => 'btn btn-sx btn-primary']) ?>
+                        <?= Html::endForm() ?>
+                    <?php Pjax::end(); ?>
+
+                    
                 </div>
+
+                <?php $pjax_wgt = Pjax::begin([ 
+                    'id' => 'articles-list',
+                    'enablePushState' => true,
+                    'enableReplaceState' => false,
+                    'timeout' => \Yii::$app->params['pjax.timeout.default']
+                ]); ?>
 
                 <?php 
                 echo ListView::widget([ 
                         'dataProvider' => $dataProvider,
-                        'itemView' => 'partial/_article',
+                        'itemView'     => function ($model, $key, $index, $widget) {
+                            return $this->renderAjax('partial/_article', [
+                                'dataProvider' => $widget->dataProvider,
+                                'model' => $model
+                            ]);
+                        },
+                        'options' => [ 'data-pjax' => true ],
                         'layout' => '
-                            <div class="cat_title_block">{pager}</div>
                             <div>
                                 {items}
                                 <div class="clr"></div>
                             </div>
+                            {pager}
                         ',
                         'pager' => [
+                            'linkOptions'=>[
+                                'data-pjax' => 1,
+                                'data-container-id' => "#{$pjax_wgt->getId()}"
+                            ],
                             'prevPageLabel' => '<',
                             'nextPageLabel' => '>',
                             'firstPageLabel' => '<<',
-                            'lastPageLabel' => '>>'
+                            'lastPageLabel' => '>>',
+                            'maxButtonCount' => 5
                         ],
                     ]);
                 ?>

@@ -13,6 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="article-view">
 
     <p>
+    <?php if (\Yii::$app->user->can('editor') || \Yii::$app->user->can('articleManager')): ?> 
         <?= Html::a(Yii::t('app', 'Set active'), ['status', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -23,11 +24,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
+    <?php endif ?>
     </p>
 
     <h2><?php echo Html::encode($model->title) ?></h2>
     <p>
-        <?php echo $model->full_data ?>
+        <?php if (\Yii::$app->user->isGuest): ?>
+            <?php echo $model->full_data ?>
+        <?php else:  ?>
+            <?php echo $model->preview_data ?>
+        <?php endif ?>
     </p>
     <hr />
     <p>

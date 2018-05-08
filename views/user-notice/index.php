@@ -17,7 +17,7 @@ UserNoticeAsset::register($this);
             <div class="col-lg-8">
                 <h2>Choosing the types of notifications you receive</h2>
 
-                <?php $pjax_wgt = Pjax::begin([ 'timeout' => 100000 ]); ?>                
+                <?php $pjax_wgt = Pjax::begin([ 'timeout' => \Yii::$app->params['pjax.timeout.default'] ]); ?>                
                 <?php
                 echo GridView::widget([
                     'dataProvider' => $dataProvider,

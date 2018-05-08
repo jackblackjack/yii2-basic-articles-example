@@ -39,7 +39,6 @@ AppAsset::register($this);
     ]);
     
     $ar_items = [];
- 
 
     if (!\Yii::$app->user->isGuest) {
         $ar_items[] =  [
