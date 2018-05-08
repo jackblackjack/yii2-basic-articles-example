@@ -151,7 +151,7 @@ Modal::begin([
     <?php //var_dump(\Yii::$app->user->can('userManager')); ?>
 <?php endif ?>
 </div-->
-
+<?php $this->registerJs("$(document).on('ready pjax:success', reloadModalHandlers)"); ?>
 </body>
 </html>
 <?php $this->endPage() ?>

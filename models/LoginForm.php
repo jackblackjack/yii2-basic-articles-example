@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
+use yii\db\Expression;
 
 /**
  * LoginForm is the model behind the login form.
@@ -60,6 +61,12 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
+            
+            // Update last login user time.
+            $this->getUser()->last_login_at = new Expression('NOW()');
+            $this->getUser()->save();
+
+            // Login user.
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
         }
         return false;

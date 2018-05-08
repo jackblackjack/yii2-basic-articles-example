@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a(Yii::t('app', 'Create User'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
     
-    <?php $pjax_wgt = Pjax::begin(); ?>
+    <?php $pjax_wgt = Pjax::begin( ['timeout' => \Yii::$app->params['pjax.timeout.default'] ]); ?>
     
     <div class="pull-right">
         <?php echo PageSize::widget([
@@ -52,7 +52,25 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterSelector' => 'select[name="per-page"]',
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'buttons' => [
+                    'update' => function ($url, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+                                    'title' => Yii::t('app', 'Update'),
+                                    'data-modal-container-id' => '#template-modal'
+                        ]);
+                    }
+                ],
+                'visibleButtons' => [
+                    'update' => function ($model) {
+                        return \Yii::$app->user->can('userManager', ['post' => $model]);
+                    },
+                    'delete' => function ($model) {
+                        return \Yii::$app->user->can('userManager', ['post' => $model]);
+                    }
+                ]
+            ],
             'email:email',
             'username',
             [
@@ -89,6 +107,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'updated_at',
+                'format' => ['date', 'php:d/m/Y H:i:s']
+            ],
+            [
+                'attribute' => 'last_login_at',
                 'format' => ['date', 'php:d/m/Y H:i:s']
             ]
         ],

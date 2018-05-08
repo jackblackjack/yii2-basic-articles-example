@@ -9,17 +9,18 @@ use yii\widgets\Pjax;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 <?php Pjax::begin([
-    'id' => 'user-create',
+    'id' => 'user-edit-container',
     'enablePushState' => false,
     'enableReplaceState' => false,
-    'formSelector' => 'user-create'
+    'formSelector' => 'user-edit-form',
+    'timeout' => \Yii::$app->params['pjax.timeout.default']
 ]); ?> 
 
 <div class="user-form">
 
     <?php $form = ActiveForm::begin([
-        'id' => 'user-create',
-        'action' => Url::toRoute([ 'user/create' ]),
+        'id' => 'user-edit-form',
+        'action' => ($model->isNewRecord ? Url::toRoute([ 'user/create' ]) : Url::toRoute([ 'user/update', 'id' => $model->id ])),
         'enableClientValidation' => true,
         'options' => [ 'data-pjax' => true ]
     ]); ?>
@@ -40,18 +41,11 @@ use yii\widgets\Pjax;
                                             ]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('app', 'Save'), [ 
+        <?= Html::submitButton(Yii::t('app', ($model->isNewRecord ? 'Save' : 'Update')), [ 
                                     'class' => 'btn btn-success', 
-                                    'data-method' => 'post', 
-                                    'data-pjax' => 'true' 
+                                    'data-method' => 'post'
                                 ]) ?>
     </div>
-
     <?php ActiveForm::end(); ?>
-
 </div>
 <?php Pjax::end() ?>
-<?php $this->registerJs("
-$(document).on('submit', 'form[data-pjax]', function(event) {
-    $.pjax.submit(event, '#user-create')
-})"); ?>
