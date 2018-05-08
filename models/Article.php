@@ -35,6 +35,14 @@ class Article extends ActiveRecord
     /**
      * {@inheritDoc}
      */
+    public static function tableName()
+    {
+        return '{{%article}}';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function init()
     {
         $this->on(static::EVENT_NEW_AND_ACTIVE, [ $this, 'updateNotices' ]);
