@@ -46,7 +46,7 @@
                     "web/assets": "0777",
                     "yii": "0755",
                     "migrations": "0755",
-                    "web/upload/article": "0777"
+                    "web/upload/article": "0755"
                 }
             ]
         },
