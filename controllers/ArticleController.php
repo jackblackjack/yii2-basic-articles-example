@@ -35,9 +35,13 @@ class ArticleController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
+                        'actions' => ['view'],
+                        'allow' => true
+                    ],
+                    [
                         'allow' => true,
                         'roles' => ['editor', 'admin'],
-                        'permissions' => [ 'articleManager', 'articleOwnManager' ]
+                        'permissions' => [ 'articleManager']
                     ],
                 ]
             ],
@@ -78,19 +82,6 @@ class ArticleController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
-     * Displays a single Article model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionRead($id)
     {
         return $this->render('view', [
             'model' => $this->findModel($id),

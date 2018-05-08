@@ -43,12 +43,16 @@ class ArticleSearch extends Article
     {
         $query = Article::find();
 
+        // Define a page size param.
+        $i_pageSize = \Yii::$app->getRequest()->getQueryParam('per-page') ?: 
+            current(array_keys(\Yii::$app->params['pagination.perpage.begin']));
+
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 3
+                'pageSize' => $i_pageSize
             ]
         ]);
 
